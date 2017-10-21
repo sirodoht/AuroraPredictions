@@ -1,18 +1,28 @@
 package layout;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.uom.gr.aurorapredictions.LocationsJsonParser;
 import android.uom.gr.aurorapredictions.R;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +33,6 @@ import java.util.List;
 public class LocationsFragment extends Fragment {
 
     ArrayAdapter<String> locationsListAdapter;
-
 
     private String[] data = {
             "Athabasca, Alberta, Canada",
@@ -78,6 +87,84 @@ public class LocationsFragment extends Fragment {
         locationsListView.setAdapter(locationsListAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            FetchLocationsTask task = new FetchLocationsTask();
+            task.execute();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public class FetchLocationsTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... params) {
+            return fetchLocationsData();
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            if (strings != null) {
+                locationsListAdapter.clear();
+                for (String location : strings) {
+                    locationsListAdapter.add(location);
+                }
+            }
+        }
+
+        private String[] fetchLocationsData() {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            String locationsJsonStr = null;
+
+            try {
+                URL url = new URL("https://api.auroras.live/v1/?type=locations");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                // Add \n for debugging purposes
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                locationsJsonStr = buffer.toString();
+
+                Log.i("LocationsFragment", locationsJsonStr);
+
+                List<String> locationsList = LocationsJsonParser.getLocationsFromJson(locationsJsonStr);
+                String[] locationsArray = new String[7];
+                return locationsList.toArray(locationsArray);
+
+            } catch (IOException e) {
+                Log.e("LocationsFragment", "Error on API call:", e);
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("LocationsFragment", "Error closing stream:", e);
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 
 }
