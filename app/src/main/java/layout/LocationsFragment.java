@@ -34,24 +34,24 @@ public class LocationsFragment extends Fragment {
 
     ArrayAdapter<String> locationsListAdapter;
 
-    private String[] data = {
-            "Athabasca, Alberta, Canada",
+    private String[] locationsData = {
+            "Athabasca",
             "Cape Liptrap Lighthouse",
             "Cherry Springs State Park",
-            "Cressy, Tasmania, Australia",
-            "Fairbanks, Alaska, United States",
-            "Flinders, Victoria, Australia",
-            "Eagle's Nest, Inverloch, Victoria, Australia",
-            "Iqaluit, Nunavut, Canada",
-            "Longyearbyen, Svalbard, Norway",
-            "Melfort, Saskatchewan, Canada",
-            "Mount Tassie, Victoria, Australia",
-            "Point Addis, Victoria, Australia",
-            "Portland, Victoria, AUstralia",
-            "Split Point Lighthouse at Aireys Inlet, Victoria, Australia",
-            "Troms, Troms County, Norway",
-            "Whitehorse, Yukon Territory, Canada",
-            "Yellowknife, NWT, Canada",
+            "Cressy",
+            "Fairbanks",
+            "Flinders",
+            "Eagle's Nest",
+            "Iqaluit",
+            "Longyearbyen",
+            "Melfort",
+            "Mount Tassie",
+            "Point Addis",
+            "Portland",
+            "Split Point Lighthouse at Aireys Inlet",
+            "Troms",
+            "Whitehorse",
+            "Yellowknife",
     };
 
     public LocationsFragment() {
@@ -73,13 +73,13 @@ public class LocationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        List<String> dummyList = new ArrayList<>(Arrays.asList(data));
+        List<String> locationsList = new ArrayList<>(Arrays.asList(locationsData));
 
         locationsListAdapter = new ArrayAdapter<>(
                 getActivity(),
                 R.layout.location_list_item,
                 R.id.location_list_item_textview,
-                dummyList);
+                locationsList);
 
         View rootView = inflater.inflate(R.layout.fragment_locations, container, false);
 
