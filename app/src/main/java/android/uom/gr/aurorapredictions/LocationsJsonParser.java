@@ -18,13 +18,13 @@ public class LocationsJsonParser {
         List<String> results = new ArrayList<>();
 
         try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray locationsList = jsonObject.getJSONArray("list");
+            JSONArray locationsJsonArray = new JSONArray(jsonString);
 
-            Log.i("locationsList:", locationsList.toString());
+            Log.i("locationsList:", locationsJsonArray.toString());
 
-            for (int i = 0; i < locationsList.length(); i++) {
-                String locationName = locationsList.getJSONObject(i).getString("name");
+            for (int i = 0; i < locationsJsonArray.length(); i++) {
+                JSONObject locationsItemJsonObject = locationsJsonArray.getJSONObject(i);
+                String locationName = locationsItemJsonObject.getString("description");
                 Log.i("locationName:", locationName);
                 results.add(locationName);
             }
