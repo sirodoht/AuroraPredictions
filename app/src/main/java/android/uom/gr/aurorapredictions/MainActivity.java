@@ -3,8 +3,6 @@ package android.uom.gr.aurorapredictions;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import layout.LocationsFragment;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
