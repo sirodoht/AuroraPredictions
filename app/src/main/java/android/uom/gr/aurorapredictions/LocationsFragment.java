@@ -1,6 +1,7 @@
-package layout;
+package android.uom.gr.aurorapredictions;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -85,6 +87,19 @@ public class LocationsFragment extends Fragment {
 
         ListView locationsListView = (ListView) rootView.findViewById(R.id.listview_locations);
         locationsListView.setAdapter(locationsListAdapter);
+
+        // open detail view on click
+//        locationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+//            @Override
+//            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+//                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+//                    intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+//                            locationString, cursor.getLong(COL_WEATHER_DATE)));
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+
 
         return rootView;
     }
