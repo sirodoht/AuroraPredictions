@@ -2,12 +2,11 @@ package android.uom.gr.aurorapredictions;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.uom.gr.aurorapredictions.LocationsJsonParser;
-import android.uom.gr.aurorapredictions.R;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,25 +35,7 @@ public class LocationsFragment extends Fragment {
 
     ArrayAdapter<String> locationsListAdapter;
 
-    private String[] locationsData = {
-            "Athabasca",
-            "Cape Liptrap Lighthouse",
-            "Cherry Springs State Park",
-            "Cressy",
-            "Fairbanks",
-            "Flinders",
-            "Eagle's Nest",
-            "Iqaluit",
-            "Longyearbyen",
-            "Melfort",
-            "Mount Tassie",
-            "Point Addis",
-            "Portland",
-            "Split Point Lighthouse at Aireys Inlet",
-            "Troms",
-            "Whitehorse",
-            "Yellowknife",
-    };
+    private String[] locationsData = {};
 
     public LocationsFragment() {
         // Required empty public constructor
@@ -72,8 +53,11 @@ public class LocationsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // fetch locations list from API
+        FetchLocationsTask task = new FetchLocationsTask();
+        task.execute();
 
         List<String> locationsList = new ArrayList<>(Arrays.asList(locationsData));
 
@@ -89,16 +73,15 @@ public class LocationsFragment extends Fragment {
         locationsListView.setAdapter(locationsListAdapter);
 
         // open detail view on click
-//        locationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-//                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-//                    intent.setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-//                            locationString, cursor.getLong(COL_WEATHER_DATE)));
-//                    startActivity(intent);
-//                }
-//            }
-//        });
+        locationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                String content = (String) adapterView.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+//                intent.putExtra("lat", );
+                startActivity(intent);
+            }
+        });
 
 
         return rootView;
@@ -157,7 +140,7 @@ public class LocationsFragment extends Fragment {
 
                 locationsJsonStr = buffer.toString();
 
-                Log.i("LocationsFragment", locationsJsonStr);
+//                Log.i("LocationsFragment", locationsJsonStr);
 
                 List<String> locationsList = LocationsJsonParser.getLocationsFromJson(locationsJsonStr);
                 String[] locationsArray = new String[7];
